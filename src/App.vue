@@ -2,13 +2,15 @@
   <div id="main">
     主应用外层区
     <br>
+    <br>
     <button @click="changeView('/one')">子应用one</button>
     &nbsp;
-    <button @click="changeView('/two')">子应用two</button>
+    <button style="margin-left: 10px" @click="changeView('/two')">子应用two</button>
     <br>
+    <div style="margin-top: 10px"></div>
     <button @click="changeState('1')">修改state = 1</button>
     &nbsp;
-    <button @click="changeState('2')">修改state = 2</button>
+    <button style="margin-left: 10px" @click="changeState('2')">修改state = 2</button>
     <hr>
     子应用内容区：
     <div id="micro-view"></div>
