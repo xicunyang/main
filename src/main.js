@@ -56,7 +56,7 @@ Vue.prototype.$actions = actions
 registerMicroApps([
         {
             name: 'one',
-            entry: '//localhost:6661',
+            entry: '//118.25.194.49:6661',
             container: '#micro-view',
             activeRule: '/one',
             props: {
@@ -78,7 +78,7 @@ registerMicroApps([
         },
         {
             name: 'two',
-            entry: '//localhost:6662',
+            entry: '//118.25.194.49:6662',
             container: '#micro-view',
             activeRule: '/two',
             props: {
