@@ -1,7 +1,13 @@
 import Vue from 'vue'
 import App from './App.vue'
+import { Subject } from "rxjs"
 
 Vue.config.productionTip = false
+
+
+// 使用rxjs通讯
+const pager = new Subject();
+Vue.prototype.$pager = pager
 
 // 导入qiankun
 import {
@@ -40,43 +46,54 @@ function render({appContetnt} = {}) {
     }
 }
 
-// 渲染主应用
-render()
+// 通讯
+const actions = initGlobalState({
+    showMsg: ''
+})
+Vue.prototype.$actions = actions
 
 // 注册子应用
 registerMicroApps([
         {
             name: 'one',
-            entry: '//118.25.194.49:6661',
+            entry: '//localhost:6661',
             container: '#micro-view',
             activeRule: '/one',
             props: {
                 msg: {
                     data: {
                         mt: 'you are one'
-                    }
+                    },
+                    pager
                 },
                 fn:{
                     show(msg){
-                        console.log('one:',msg);
+                        pager.next({
+                            from: "one",
+                            showMsg: msg
+                        });
                     }
                 }
             }
         },
         {
             name: 'two',
-            entry: '//118.25.194.49:6662',
+            entry: '//localhost:6662',
             container: '#micro-view',
             activeRule: '/two',
             props: {
                 msg: {
                     data: {
                         mt: 'you are two'
-                    }
+                    },
+                    pager
                 },
                 fn:{
                     show(msg){
-                        console.log('two:',msg);
+                        pager.next({
+                            from: "two",
+                            showMsg: msg
+                        });
                     }
                 }
             }
@@ -85,41 +102,50 @@ registerMicroApps([
     {
         beforeLoad: [
             app => {
-                console.log('beforeLoad');
+                pager.next({
+                    from: "main",
+                    showMsg: "beforeLoad"
+                });
             }
         ],
         beforeMount: [
             app => {
-                console.log('beforeMount');
+                pager.next({
+                    from: "main",
+                    showMsg: "beforeMount"
+                });
             }
         ],
         beforeUnmount: [
             app => {
-                console.log('beforeUnmount');
+                pager.next({
+                    from: "main",
+                    showMsg: "beforeUnmount"
+                });
             }
         ],
         afterUnmount: [
             app => {
-                console.log('afterUnmount');
+                pager.next({
+                    from: "main",
+                    showMsg: "afterUnmount"
+                });
             }
         ]
     })
-
-// 通讯
-const actions = initGlobalState({
-    mt: 'init'
-})
-actions.onGlobalStateChange((state,prev)=>{
-    console.log('main state change',state);
-})
-Vue.prototype.$actions = actions
 
 setDefaultMountApp('one')
 
 // 第一个子应用加载完毕后回调
 runAfterFirstMounted(()=>{
-  console.log('第一个子应用加载完毕后的回调');
+    pager.next({
+        from: "main",
+        showMsg: "第一个子应用加载完毕后回调"
+    });
 })
+
+// 渲染主应用
+render()
 
 // 启动微前端
 start()
